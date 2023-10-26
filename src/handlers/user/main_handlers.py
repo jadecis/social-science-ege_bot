@@ -38,9 +38,7 @@ async def stat_hand(call: CallbackQuery):
 
 @dp.callback_query_handler(text='decide', state="*")
 async def decide_hand(call: CallbackQuery, state: FSMContext):
-    await call.message.answer("Можем решать задачки рандомно по всем темам, а можем по отдельным разделам.   "
-                              +"Что выбираешь?   P.S. Если не знаешь, как проверяются задания, или хочешь получить"
-                              +"советы по решению, то жми инструкцию.", reply_markup=type_decide())
+    await call.message.answer("Можем решать задачки рандомно по всем темам, а можем по отдельным разделам.\nЧто выбираешь?", reply_markup=type_decide())
 
 @dp.callback_query_handler(text='deleteinst', state="*")
 async def decide_hand(call: CallbackQuery, state: FSMContext):

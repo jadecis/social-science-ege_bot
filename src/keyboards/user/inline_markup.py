@@ -5,7 +5,7 @@ def start_menu():
     
     markup.add(
         InlineKeyboardButton('Решать задачи', callback_data='decide'),
-        InlineKeyboardButton('Инструкция', callback_data='instruction'),
+        # InlineKeyboardButton('Инструкция', callback_data='instruction'),
         # InlineKeyboardButton('Посмотреть статистику', callback_data='stat'),
     )
     
@@ -53,12 +53,12 @@ def back_task():
     return markup
 
 def type_decide():
-    markup= InlineKeyboardMarkup(row_width=1)
+    markup= InlineKeyboardMarkup(row_width=3)
     
     markup.add(
+        InlineKeyboardButton('Рандомно', callback_data='random'),
+        InlineKeyboardButton('По разделам', callback_data='section'),
         InlineKeyboardButton('Инструкция', callback_data='instruction'),
-        InlineKeyboardButton('Давай рандомно', callback_data='random'),
-        InlineKeyboardButton('Давай по отдельным разделам', callback_data='section'),
     )
     
     return markup

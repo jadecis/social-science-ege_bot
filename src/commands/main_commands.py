@@ -4,6 +4,7 @@ from loader import db, dp, bot
 from src.handlers.user.stats import get_stats
 from src.keyboards.user.inline_markup import start_menu, type_decide, decide_tusk_but
 from aiogram.dispatcher import FSMContext
+from datetime import date
 
 
 
@@ -15,6 +16,7 @@ async def start_handler(msg: Message, state: FSMContext):
                 "user_id" : msg.from_user.id,
                 "username" : msg.from_user.username,
                 "full_name" : msg.from_user.full_name,
+                "date_reg" : date.today()
         }
     )
     bot_info= await bot.get_me()

@@ -18,10 +18,11 @@ class Database():
         self.connection.ping()
         with self.connection.cursor() as cursor:
             try:
-                cursor.execute("INSERT INTO users (user_id, username, fullname) VALUES (%s, %s, %s);",
+                cursor.execute("INSERT INTO users (user_id, username, fullname, date_reg) VALUES (%s, %s, %s, %s);",
                                     (user["user_id"],
                                     user["username"],
-                                    user["full_name"], ))
+                                    user["full_name"],
+                                    user["date_reg"],))
             except:
                 cursor.execute("UPDATE users SET username= %s, fullname= %s WHERE user_id=%s;",
                                     (user["username"],
