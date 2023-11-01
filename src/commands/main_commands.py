@@ -3,8 +3,10 @@ from aiogram.dispatcher.filters import CommandStart
 from loader import db, dp, bot 
 from src.handlers.user.stats import get_stats
 from src.keyboards.user.inline_markup import start_menu, type_decide, decide_tusk_but
+from src.keyboards.admin.reply_markup import admin_menu
 from aiogram.dispatcher import FSMContext
 from datetime import date
+from src.filters.is_admin import IsAdmin
 
 
 
@@ -16,7 +18,7 @@ async def start_handler(msg: Message, state: FSMContext):
                 "user_id" : msg.from_user.id,
                 "username" : msg.from_user.username,
                 "full_name" : msg.from_user.full_name,
-                "date_reg" : date.today()
+                "date_reg" : str(date.today())
         }
     )
     bot_info= await bot.get_me()
@@ -39,3 +41,8 @@ async def stats_handler(msg: Message, state: FSMContext):
     await msg.answer("Можем решать задачки рандомно по всем темам, а можем по отдельным разделам.   "
                               +"Что выбираешь?   P.S. Если не знаешь, как проверяются задания, или хочешь получить"
                               +"советы по решению, то жми инструкцию.", reply_markup=type_decide())
+    
+@dp.message_handler(IsAdmin(), commands=["admin"], state="*")
+async def admin_com(msg: Message, state: FSMContext):
+    await state.finish()
+    await msg.answer("Меню", reply_markup=admin_menu())

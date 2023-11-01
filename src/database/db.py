@@ -1,6 +1,5 @@
 import pymysql
-import os
-
+from datetime import datetime
 class Database():
     
     def __init__(self, host, user, password, database):
@@ -51,15 +50,6 @@ class Database():
             
         return cursor.fetchone()
      
-    def upQueue(self, user_id):
-        self.connection.ping()
-        with self.connection.cursor() as cursor:
-            count=len(self.get_tasks())-1
-            user_queue= self.get_user_queue(user_id)
-            if user_queue < count:
-                cursor.execute("UPDATE users SET queue=queue+1 WHERE user_id=%s;", (user_id, ))
-            else:
-                cursor.execute("UPDATE users SET queue=0 WHERE user_id=%s;", (user_id, ))
                 
     def get_user_tasks(self, user_id, section=None):
         self.connection.ping()
@@ -120,8 +110,8 @@ class Database():
             cursor.execute("SELECT * FROM stats WHERE task_id=%s", (task_id))
             if len(cursor.fetchall()) == 1:
                 cursor.execute("DELETE FROM stats WHERE task_id=%s", task_id)
-            cursor.execute("INSERT INTO stats (user_id, task_id, section, max_answer) VALUES (%s, %s, %s, %s)", 
-                               (user_id, task_id, section, max_an, ))
+            cursor.execute("INSERT INTO stats (user_id, task_id, section, max_answer, date) VALUES (%s, %s, %s, %s, %s)", 
+                               (user_id, task_id, section, max_an, str(datetime.now())))
               
     def last_user_answer(self, user_id):
         self.connection.ping()
@@ -163,13 +153,23 @@ class Database():
         with self.connection.cursor() as cursor:
             cursor.execute("DELETE FROM stats WHERE id=%s", (id_, ))
             
-    def import_tasks(self):
+    def get_stats_user(self, start_dt=None, end_dt=None):
         self.connection.ping()
-        with self.connection.cursor() as cursor:    
-            cursor.execute("""INSERT INTO tasks
-                           (`numEGE`, `section`, `theme`,
-                           `exercise`, `answer`, `maxBalls`,
-                           `decide`, `typecheck`)
-                           VALUES (
-                               %s, (SELECT id FROM sections WHERE section= %s), %s, %s,
-                               %s, %s, %s, %s )""")
+        with self.connection.cursor() as cursor:
+            if start_dt or end_dt:
+                cursor.execute("SELECT * FROM users WHERE DATE(date_reg) BETWEEN %s AND %s", (start_dt, end_dt, ))
+            else:
+                cursor.execute("SELECT * FROM users")
+
+            return cursor.fetchall()
+
+
+    def get_stats_decide(self, start_dt=None, end_dt=None):
+        self.connection.ping()
+        with self.connection.cursor() as cursor:
+            if start_dt or end_dt:
+                cursor.execute("SELECT COUNT(id) FROM stats")
+            else:
+                cursor.execute("SELECT COUNT(id) FROM stats WHERE DATE(date) BETWEEN %s and %s and answer IS NOT NULL", (start_dt, end_dt, ))
+            return cursor.fetchone()['COUNT(id)']
+    

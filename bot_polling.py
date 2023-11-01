@@ -2,7 +2,8 @@ from loader import dp
 from aiogram import executor
 from aiogram.types import BotCommand
 from src.commands import main_commands
-from src.handlers.user import main_handlers, tasks
+from src.handlers.user import main_handlers, tasks, stats
+from src.handlers.admin import admin_handlers
 
 async def set_default_commands(dp):
     await dp.bot.set_my_commands([
